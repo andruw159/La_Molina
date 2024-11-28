@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Admin Panel - Café La Molina</title>
+        <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet" />
+        <style>
+            body {
+                font-family: 'Arial', sans-serif;
+                background-color: #f8f5f0;
+                color: #5a4632;
+            }
+
+            .admin-panel {
+                background-color: #fff4e6;
+                border-radius: 8px;
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                padding: 20px;
+            }
+
+            .section-heading {
+                color: #5a4632;
+            }
+
+            .nav-pills .nav-link {
+                color: #fff;
+                background-color: #e6a756;
+                margin-right: 10px;
+                border-radius: 5px;
+            }
+
+            .nav-pills .nav-link.active {
+                background-color: #5a4632;
+            }
+
+            .form-group label {
+                color: #5a4632;
+            }
+
+            .form-control {
+                border: 1px solid #e6a756;
+                border-radius: 5px;
+            }
+
+            .btn-primary {
+                background-color: #e6a756;
+                border-color: #e6a756;
+                color: #fff;
+            }
+
+            .btn-primary:hover {
+                background-color: #5a4632;
+                border-color: #5a4632;
+            }
+
+            .list-group-item {
+                background-color: #fff4e6;
+                border: 1px solid #e6a756;
+                color: #5a4632;
+            }
+
+            .list-group-item .btn-warning {
+                background-color: #e6a756;
+                border-color: #e6a756;
+                color: #fff;
+            }
+
+            .list-group-item .btn-danger {
+                background-color: #5a4632;
+                border-color: #5a4632;
+                color: #fff;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="admin-panel container mt-5">
+            <section id="admin-panel" class="page-section mt-4">
+                <div class="container">
+                    <div class="text-center">
+                        <h2 class="section-heading text-uppercase">Panel de Administración</h2>
+                        <section>
+                            <h2>Bienvenido, Admin</h2>
+                            <p>Aquí puedes gestionar los productos, pedidos y usuarios de tu tienda.</p>
+                        </section>
+                        <nav>
+                            <h3 class="section-subheading text-muted">Gestión de productos</h3>
+                            <ul class="nav nav-pills">
+                                <li class="nav-item"><a class="nav-link active" href="#">Gestión de Productos</a></li>
+                                <li class="nav-item"><a class="nav-link" href="#">Pedidos</a></li>
+                                <li class="nav-item"><a class="nav-link" href="usuarios.html">Usuarios</a></li>
+                                <li class="nav-item"><a class="nav-link" href="login.html">Cerrar Sesión</a></li>
+                            </ul>
+                        </nav>
+
+                    </div>
+                    <form id="admin-form" onsubmit="addProduct(); return false;">
+                        <input type="hidden" id="product-id" name="idProducto">
+                        <div class="form-group">
+                            <label for="product-name">Nombre del Producto</label>
+                            <input type="text" id="product-name" name="nombre" class="form-control" placeholder="Ingrese el nombre">
+                        </div>
+                        <div class="form-group">
+                            <label for="product-description">Descripción</label>
+                            <input type="text" id="product-description" name="descripcion" class="form-control" placeholder="Ingrese la descripción">
+                        </div>
+                        <div class="form-group">
+                            <label for="product-stock">Stock</label>
+                            <input type="number" id="product-stock" name="stock" class="form-control" placeholder="Ingrese el stock">
+                        </div>
+                        <div class="form-group">
+                            <label for="product-price">Precio</label>
+                            <input type="number" id="product-price" name="precio" class="form-control" placeholder="Ingrese el precio">
+                        </div>
+                        <div class="form-group">
+                            <label for="product-iva">IVA (%)</label>
+                            <input type="number" id="product-iva" name="iva" class="form-control" placeholder="Ingrese el IVA">
+                        </div>
+                        <div class="form-group">
+                            <label for="product-weight">Peso (kg)</label>
+                            <input type="number" id="product-weight" name="peso" class="form-control" placeholder="Ingrese el peso">
+                        </div>
+                        <div class="form-group">
+                            <label for="product-category">Categoría</label>
+                            <input type="text" id="product-category" name="categoria" class="form-control" placeholder="Ingrese la categoría">
+                        </div>
+                        <button type="submit" class="btn btn-primary mt-3">Agregar/Editar Producto</button>
+                    </form>
+                    <div class="mt-5">
+                        <h4>Lista de Productos</h4>
+                        <ul id="product-list" class="list-group"></ul>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <script>
+            function fetchProducts() {
+                fetch('obtenerProductos')
+                        .then(response => response.text())
+                        .then(html => {
+                            const productList = document.getElementById('product-list');
+                            productList.innerHTML = html;
+                        })
+                        .catch(error => console.error('Error fetching products:', error));
+            }
+
+            function addProduct() {
+                const form = document.getElementById('admin-form');
+                const formData = new URLSearchParams(new FormData(form)).toString();
+                const action = form.querySelector('input[name="idProducto"]').value ? 'editarProducto' : 'registroProducto';
+
+                fetch(action, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    body: formData
+                }).then(response => {
+                    if (response.ok) {
+                        fetchProducts();
+                        form.reset();
+                    } else {
+                        console.error('Error adding/editing product:', response.statusText);
+                    }
+                }).catch(error => console.error('Error adding/editing product:', error));
+            }
+
+            function editProduct(idProducto) {
+                fetch(`obtenerProducto?idProducto=${idProducto}`)
+                        .then(response => response.text())
+                        .then(data => {
+                            const product = data.split('|');
+                            document.getElementById('product-id').value = product[0];
+                            document.getElementById('product-name').value = product[1] || '';
+                            document.getElementById('product-description').value = product[2] || '';
+                            document.getElementById('product-stock').value = product[3] || '';
+                            document.getElementById('product-price').value = product[4] || '';
+                            document.getElementById('product-iva').value = product[5] || '';
+                            document.getElementById('product-weight').value = product[6] || '';
+                            document.getElementById('product-category').value = product[7] || '';
+                        })
+                        .catch(error => console.error('Error fetching product:', error));
+            }
+
+            function deleteProduct(idProducto) {
+                fetch('eliminarProducto', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    body: new URLSearchParams({idProducto}).toString()
+                }).then(response => {
+                    if (response.ok) {
+                        fetchProducts(); // Reload the list after deletion
+                    } else {
+                        console.error('Error deleting product:', response.statusText);
+                    }
+                }).catch(error => console.error('Error deleting product:', error));
+            }
+
+            document.addEventListener('DOMContentLoaded', fetchProducts);
+        </script>
+    </body>
+</html>

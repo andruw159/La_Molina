@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Gestión de Usuarios - Café La Molina</title>
+        <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet" />
+        <style>
+            body {
+                font-family: 'Arial', sans-serif;
+                background-color: #f8f5f0;
+                color: #5a4632;
+            }
+
+            .admin-panel {
+                background-color: #fff4e6;
+                border-radius: 8px;
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                padding: 20px;
+                margin-top: 20px;
+            }
+
+            .section-heading {
+                color: #5a4632;
+            }
+
+            .nav-pills .nav-link {
+                color: #fff;
+                background-color: #e6a756;
+                margin-right: 10px;
+                border-radius: 5px;
+            }
+
+            .nav-pills .nav-link.active {
+                background-color: #5a4632;
+            }
+
+            .form-group label {
+                color: #5a4632;
+            }
+
+            .form-control {
+                border: 1px solid #e6a756;
+                border-radius: 5px;
+            }
+
+            .btn-primary {
+                background-color: #e6a756;
+                border-color: #e6a756;
+                color: #fff;
+            }
+
+            .btn-primary:hover {
+                background-color: #5a4632;
+                border-color: #5a4632;
+            }
+
+            .list-group-item {
+                background-color: #fff4e6;
+                border: 1px solid #e6a756;
+                color: #5a4632;
+            }
+
+            .list-group-item .btn-warning {
+                background-color: #e6a756;
+                border-color: #e6a756;
+                color: #fff;
+            }
+
+            .list-group-item .btn-danger {
+                background-color: #5a4632;
+                border-color: #5a4632;
+                color: #fff;
+            }
+            .alert {
+                padding: 10px;
+                margin-top: 10px;
+                border-radius: 5px;
+                font-size: 14px;
+            }
+
+            .alert-success {
+                background-color: #d4edda;
+                color: #155724;
+                border: 1px solid #c3e6cb;
+            }
+
+            .alert-danger {
+                background-color: #f8d7da;
+                color: #721c24;
+                border: 1px solid #f5c6cb;
+            }
+
+        </style>
+    </head>
+    <body>
+        <div class="admin-panel container">
+            <div class="text-center">
+                <nav> 
+                    <h3 class="section-subheading text-muted">Gestión de Usuarios</h3>
+                    <ul class="nav nav-pills">
+                        <li class="nav-item"><a class="nav-link" href="admin-panel.html">Gestión de Productos</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#">Pedidos</a></li>
+                        <li class="nav-item"><a class="nav-link active" href="usuarios.html">Usuarios</a></li>
+                        <li class="nav-item"><a class="nav-link" href="login.html">Cerrar Sesión</a></li>
+                    </ul>
+                </nav>
+            </div>
+            <form id="user-form" onsubmit="addUser(); return false;">
+                <input type="hidden" id="user-id" name="id">
+                <div class="form-group">
+                    <label for="user-nombres">Nombres</label>
+                    <input type="text" id="user-nombres" name="nombres" class="form-control" placeholder="Ingrese los nombres" required>
+                </div>
+                <div class="form-group">
+                    <label for="user-apellidos">Apellidos</label>
+                    <input type="text" id="user-apellidos" name="apellidos" class="form-control" placeholder="Ingrese los apellidos" required>
+                </div>
+                <div class="form-group">
+                    <label for="user-fechaNacimiento">Fecha de Nacimiento</label>
+                    <input type="date" id="user-fechaNacimiento" name="fechaNacimiento" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="user-correo">Correo Electrónico</label>
+                    <input type="email" id="user-correo" name="correo" class="form-control" placeholder="Ingrese el correo electrónico" required>
+                </div>
+                <div class="form-group">
+                    <label for="user-telefono">Teléfono</label>
+                    <input type="tel" id="user-telefono" name="telefono" class="form-control" placeholder="Ingrese el teléfono" required>
+                </div>
+                <div class="form-group">
+                    <label for="user-direccion">Dirección</label>
+                    <input type="text" id="user-direccion" name="direccion" class="form-control" placeholder="Ingrese la dirección" required>
+                </div>
+                <div class="form-group">
+                    <label for="user-clave">Clave</label>
+                    <input type="password" id="user-clave" name="clave" class="form-control" placeholder="Ingrese la clave" required>
+                </div>
+                <div class="form-group">
+                    <label for="user-rol">Rol</label>
+                    <select id="user-rol" name="rol" class="form-control" required>
+                        <option value="usuario">Usuario</option>
+                        <option value="admin">Admin</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary mt-3">Agregar/Editar Usuario</button>
+            </form>
+            <div class="mt-5">
+                <h4>Lista de Usuarios</h4>
+                <ul id="user-list" class="list-group"></ul>
+            </div>
+        </div>
+
+        <script>
+            function fetchUsers() {
+                fetch('obtenerUsuarios')
+                        .then(response => response.text())
+                        .then(html => {
+                            const userList = document.getElementById('user-list');
+                            userList.innerHTML = html;
+                        })
+                        .catch(error => console.error('Error fetching users:', error));
+            }
+
+
+            function addUser() {
+                const form = document.getElementById('user-form');
+                const formData = new URLSearchParams(new FormData(form)).toString();
+                const messageDiv = document.getElementById('user-message');
+
+                // Oculta el mensaje antes de comenzar
+                messageDiv.style.display = 'none';
+                messageDiv.className = 'alert';
+
+                fetch('registroUsuario', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    body: formData
+                }).then(response => {
+                    if (response.ok) {
+                        return response.text(); // Leer mensaje de éxito del servidor
+                    } else {
+                        throw new Error('Error al registrar usuario');
+                    }
+                }).then(message => {
+                    // Mostrar mensaje de éxito
+                    messageDiv.textContent = message;
+                    messageDiv.classList.add('alert-success'); // Clase para mensajes de éxito
+                    messageDiv.style.display = 'block'; // Mostrar el mensaje
+                    fetchUsers(); // Actualizar la lista de usuarios
+                    form.reset(); // Limpiar el formulario
+                }).catch(error => {
+                    console.error('Error al agregar usuario:', error);
+                    // Mostrar mensaje de error
+                    messageDiv.textContent = 'Hubo un problema al agregar el usuario.';
+                    messageDiv.classList.add('alert-danger'); // Clase para mensajes de error
+                    messageDiv.style.display = 'block'; // Mostrar el mensaje
+                });
+            }
+
+
+
+            function editUser(id) {
+                fetch(`obtenerUsuario?id=${id}`)
+                        .then(response => response.text())
+                        .then(data => {
+                            const user = data.split('|');
+                            document.getElementById('user-id').value = user[0];
+                            document.getElementById('user-nombres').value = user[1] || '';
+                            document.getElementById('user-apellidos').value = user[2] || '';
+                            document.getElementById('user-fechaNacimiento').value = user[3] || '';
+                            document.getElementById('user-correo').value = user[4] || '';
+                            document.getElementById('user-telefono').value = user[5] || '';
+                            document.getElementById('user-direccion').value = user[6] || '';
+                            document.getElementById('user-clave').value = user[7] || '';
+                            document.getElementById('user-rol').value = user[8] || '';
+                        })
+                        .catch(error => console.error('Error fetching user:', error));
+            }
+
+            function deleteUser(id) {
+                fetch('eliminarUsuario', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    body: new URLSearchParams({id}).toString()
+                }).then(response => {
+                    if (response.ok) {
+                        fetchUsers();
+                    } else {
+                        console.error('Error deleting user:', response.statusText);
+                    }
+                }).catch(error => console.error('Error deleting user:', error));
+            }
+
+            document.addEventListener('DOMContentLoaded', fetchUsers);
+        </script>
+    </body>
+</html>

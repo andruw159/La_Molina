@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Carrito de Compras</title>
+        <!-- CSS de Bootstrap -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+        <!-- Font Awesome para los íconos -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+        <style>
+            body {
+                font-family: 'Arial', sans-serif;
+                background-color: #f8f5f0;
+                color: #5a4632;
+            }
+
+            .navbar {
+                background-color: #e6a756 !important;
+            }
+
+            .navbar-brand, .nav-link {
+                color: #fff !important;
+            }
+
+            .navbar-brand:hover, .nav-link:hover {
+                color: #5a4632 !important;
+            }
+
+            .container {
+                margin-top: 50px;
+            }
+
+            .table thead th {
+                background-color: #e6a756;
+                color: #fff;
+            }
+
+            .table tbody tr {
+                background-color: #fff4e6;
+            }
+
+            .table tbody td {
+                vertical-align: middle;
+            }
+
+            .table-responsive {
+                margin-bottom: 20px;
+            }
+
+            .btn-primary {
+                background-color: #e6a756;
+                border-color: #e6a756;
+                color: #fff;
+            }
+
+            .btn-primary:hover {
+                background-color: #5a4632;
+                border-color: #5a4632;
+            }
+
+            .btn-danger {
+                background-color: #5a4632;
+                border-color: #5a4632;
+                color: #fff;
+            }
+
+            .btn-danger:hover {
+                background-color: #e6a756;
+                border-color: #e6a756;
+                color: #fff;
+            }
+
+            .modal-header {
+                background-color: #e6a756;
+                color: #fff;
+            }
+
+            .modal-footer .btn {
+                background-color: #e6a756;
+                border-color: #e6a756;
+                color: #fff;
+            }
+
+            .modal-footer .btn:hover {
+                background-color: #5a4632;
+                border-color: #5a4632;
+            }
+
+            .table-bordered th, .table-bordered td {
+                border-color: #e6a756;
+            }
+
+            .text-center h2 {
+                color: #5a4632;
+            }
+
+            .text-right h4 {
+                color: #5a4632;
+            }
+        </style>
+    </head>
+    <body>
+        <!-- Barra de navegación -->
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <a class="navbar-brand" href="#">Tienda</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item"><a class="nav-link" href="index.html">Inicio</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#services">Servicios</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#portfolio">Productos</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#about">Conócenos</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#contact">Contacto</a></li>
+                    <li class="nav-item"><a class="nav-link" href="cart.html"><i class="fas fa-shopping-cart"></i> Carrito</a></li>
+                </ul>
+            </div>
+        </nav>
+
+        <!-- Contenido del carrito -->
+        <div class="container mt-5">
+            <h2 class="text-center">Tu Carrito de Compras</h2>
+            <div class="row">
+                <div class="col-12">
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Producto</th>
+                                    <th>Precio</th>
+                                    <th>Cantidad</th>
+                                    <th>Total</th>
+                                </tr>
+                            </thead>
+                            <tbody id="carrito-body">
+                                <!-- Los productos se cargarán aquí -->
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="text-right">
+                        <h4>Total: <span id="total-carrito">0</span></h4>
+                        <button class="btn btn-primary">Proceder al Pago</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal para agregar producto -->
+        <div class="modal fade" id="addProductModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Agregar Producto</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="addProductForm">
+                            <div class="mb-3">
+                                <label for="productName" class="form-label">Nombre del Producto</label>
+                                <input type="text" class="form-control" id="productName" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="productPrice" class="form-label">Precio</label>
+                                <input type="number" class="form-control" id="productPrice" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="productQuantity" class="form-label">Cantidad</label>
+                                <input type="number" class="form-control" id="productQuantity" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Agregar</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Scripts de Bootstrap y jQuery -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+        <script>
+            $(document).ready(function () {
+                // Cargar productos desde el archivo JSON
+                $.getJSON('productos.json', function (data) {
+                    var total = 0;
+                    $.each(data, function (key, producto) {
+                        agregarProductoATabla(producto);
+                        total += producto.precio * producto.cantidad;
+                    });
+                    $('#total-carrito').text(total);
+                });
+
+                // Función para agregar productos a la tabla
+                function agregarProductoATabla(producto) {
+                    var subtotal = producto.precio * producto.cantidad;
+                    $('#carrito-body').append('<tr><td>' + producto.nombre + '</td><td>$' + producto.precio + '</td><td><input type="number" value="' + producto.cantidad + '" min="1" class="form-control cantidad-producto"></td><td class="subtotal">$' + subtotal + '</td><td><button class="btn btn-danger btn-sm eliminar-producto">Eliminar</button></td></tr>');
+                }
+
+                // Manejar el envío del formulario para agregar productos
+                $('#addProductForm').submit(function (event) {
+                    event.preventDefault();
+                    var nombre = $('#productName').val();
+                    var precio = $('#productPrice').val();
+                    var cantidad = $('#productQuantity').val();
+                    var nuevoProducto = {nombre: nombre, precio: parseFloat(precio), cantidad: parseInt(cantidad)};
+                    agregarProductoATabla(nuevoProducto);
+                    $('#addProductModal').modal('hide');
+                });
+
+                // Manejar la eliminación de productos
+                $(document).on('click', '.eliminar-producto', function () {
+                    $(this).closest('tr').remove();
+                    actualizarTotal();
+                });
+
+                // Manejar el cambio de cantidad de productos
+                $(document).on('change', '.cantidad-producto', function () {
+                    var cantidad = $(this).val();
+                    var precio = $(this).closest('tr').find('td:eq(1)').text().replace('$', '');
+                    var subtotal = cantidad * precio;
+                    $(this).closest('tr').find('.subtotal').text('$' + subtotal);
+                    actualizarTotal();
+                });
+
+                // Actualizar el total del carrito
+                function actualizarTotal() {
+                    var total = 0;
+                    $('.subtotal').each(function () {
+                        total += parseFloat($(this).text().replace('$', ''));
+                    });
+                    $('#total-carrito').text(total);
+                }
+            });
+        </script>
+    </body>
+</html>

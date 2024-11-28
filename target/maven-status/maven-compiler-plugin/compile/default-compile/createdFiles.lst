@@ -1,0 +1,13 @@
+com\andruw\la_molina\resources\JakartaEE8Resource.class
+Login.class
+ObtenerUsuario.class
+EliminarUsuario.class
+utilities\conexionBD.class
+com\andruw\la_molina\JakartaRestConfiguration.class
+EditarProducto.class
+EliminarProducto.class
+ObtenerProductos.class
+RegistroUsuario.class
+EditarUsuario.class
+RegistrarProducto.class
+ObtenerUsuarios.class
