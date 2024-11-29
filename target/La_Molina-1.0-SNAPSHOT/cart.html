@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Carrito de Compras</title>
+        <title>Carrito de Compras - Tienda de Café</title>
         <!-- CSS de Bootstrap -->
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
         <!-- Font Awesome para los íconos -->
@@ -11,20 +11,20 @@
         <style>
             body {
                 font-family: 'Arial', sans-serif;
-                background-color: #f8f5f0;
-                color: #5a4632;
+                background-color: #f8f5f0; /* Beige claro */
+                color: #5a4632; /* Marrón oscuro */
             }
 
             .navbar {
-                background-color: #e6a756 !important;
+                background-color: #8d6e63 !important; /* Marrón oscuro */
             }
 
             .navbar-brand, .nav-link {
-                color: #fff !important;
+                color: #ffebcd !important; /* Color crema */
             }
 
             .navbar-brand:hover, .nav-link:hover {
-                color: #5a4632 !important;
+                color: #d7ccc8 !important; /* Marrón claro */
             }
 
             .container {
@@ -32,12 +32,12 @@
             }
 
             .table thead th {
-                background-color: #e6a756;
-                color: #fff;
+                background-color: #d7ccc8; /* Marrón claro */
+                color: #5a4632; /* Marrón oscuro */
             }
 
             .table tbody tr {
-                background-color: #fff4e6;
+                background-color: #ffebcd; /* Color crema */
             }
 
             .table tbody td {
@@ -49,61 +49,60 @@
             }
 
             .btn-primary {
-                background-color: #e6a756;
-                border-color: #e6a756;
-                color: #fff;
+                background-color: #8d6e63; /* Marrón oscuro */
+                border-color: #8d6e63;
+                color: #ffebcd; /* Color crema */
             }
 
             .btn-primary:hover {
-                background-color: #5a4632;
+                background-color: #5a4632; /* Marrón más oscuro */
                 border-color: #5a4632;
             }
 
             .btn-danger {
-                background-color: #5a4632;
+                background-color: #5a4632; /* Marrón oscuro */
                 border-color: #5a4632;
-                color: #fff;
+                color: #ffebcd; /* Color crema */
             }
 
             .btn-danger:hover {
-                background-color: #e6a756;
-                border-color: #e6a756;
-                color: #fff;
+                background-color: #8d6e63; /* Marrón más claro */
+                border-color: #8d6e63;
             }
 
             .modal-header {
-                background-color: #e6a756;
-                color: #fff;
+                background-color: #8d6e63; /* Marrón oscuro */
+                color: #ffebcd; /* Color crema */
             }
 
             .modal-footer .btn {
-                background-color: #e6a756;
-                border-color: #e6a756;
-                color: #fff;
+                background-color: #5a4632; /* Marrón oscuro */
+                border-color: #5a4632;
+                color: #ffebcd; /* Color crema */
             }
 
             .modal-footer .btn:hover {
-                background-color: #5a4632;
-                border-color: #5a4632;
+                background-color: #8d6e63; /* Marrón más claro */
+                border-color: #8d6e63;
             }
 
             .table-bordered th, .table-bordered td {
-                border-color: #e6a756;
+                border-color: #8d6e63; /* Marrón oscuro */
             }
 
             .text-center h2 {
-                color: #5a4632;
+                color: #5a4632; /* Marrón oscuro */
             }
 
             .text-right h4 {
-                color: #5a4632;
+                color: #5a4632; /* Marrón oscuro */
             }
         </style>
     </head>
     <body>
         <!-- Barra de navegación -->
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
-            <a class="navbar-brand" href="#">Tienda</a>
+            <a class="navbar-brand" href="#">Tienda de Café</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -130,6 +129,7 @@
                                 <tr>
                                     <th>Producto</th>
                                     <th>Precio</th>
+                                    <th>Peso</th>
                                     <th>Cantidad</th>
                                     <th>Total</th>
                                 </tr>
@@ -146,6 +146,7 @@
                 </div>
             </div>
         </div>
+
         <!-- Modal para agregar producto -->
         <div class="modal fade" id="addProductModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog">
@@ -190,7 +191,8 @@
                                 nombre: campos[1],
                                 descripcion: campos[2],
                                 stock: parseInt(campos[3]),
-                                precio: parseFloat(campos[4])
+                                precio: parseFloat(campos[4]),
+                                peso: parseFloat(campos[5])
                             };
                             agregarProductoATabla(productoObj);
                         }
@@ -201,7 +203,7 @@
                 // Función para agregar productos a la tabla
                 function agregarProductoATabla(producto) {
                     var subtotal = producto.precio * 1; // Default cantidad 1
-                    $('#carrito-body').append('<tr><td>' + producto.nombre + '</td><td>$' + producto.precio + '</td><td><input type="number" value="1" min="1" max="' + producto.stock + '" class="form-control cantidad-producto"></td><td class="subtotal">$' + subtotal + '</td><td><button class="btn btn-danger btn-sm eliminar-producto">Eliminar</button></td></tr>');
+                    $('#carrito-body').append('<tr><td>' + producto.nombre + '</td><td>$' + producto.precio + '</td><td>' + producto.peso + ' kg</td><td><input type="number" value="1" min="1" max="' + producto.stock + '" class="form-control cantidad-producto"></td><td class="subtotal">$' + subtotal + '</td><td><button class="btn btn-danger btn-sm eliminar-producto">Eliminar</button></td></tr>');
                 }
 
                 // Manejar la eliminación de productos
