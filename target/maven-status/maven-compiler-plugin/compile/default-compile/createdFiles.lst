@@ -4,6 +4,7 @@ ObtenerUsuario.class
 EliminarUsuario.class
 utilities\conexionBD.class
 com\andruw\la_molina\JakartaRestConfiguration.class
+ListarProductos.class
 EditarProducto.class
 EliminarProducto.class
 ObtenerProductos.class

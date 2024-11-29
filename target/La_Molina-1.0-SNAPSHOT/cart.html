@@ -146,7 +146,6 @@
                 </div>
             </div>
         </div>
-
         <!-- Modal para agregar producto -->
         <div class="modal fade" id="addProductModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog">
@@ -175,38 +174,35 @@
                 </div>
             </div>
         </div>
-
         <!-- Scripts de Bootstrap y jQuery -->
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
         <script>
             $(document).ready(function () {
-                // Cargar productos desde el archivo JSON
-                $.getJSON('productos.json', function (data) {
-                    var total = 0;
-                    $.each(data, function (key, producto) {
-                        agregarProductoATabla(producto);
-                        total += producto.precio * producto.cantidad;
+                // Cargar productos desde el servlet listarProductos
+                $.get('listarProductos', function (data) {
+                    var productos = data.split('\n');
+                    productos.forEach(function (producto) {
+                        if (producto.trim() !== '') {
+                            var campos = producto.split(';');
+                            var productoObj = {
+                                id: campos[0],
+                                nombre: campos[1],
+                                descripcion: campos[2],
+                                stock: parseInt(campos[3]),
+                                precio: parseFloat(campos[4])
+                            };
+                            agregarProductoATabla(productoObj);
+                        }
                     });
-                    $('#total-carrito').text(total);
+                    actualizarTotal();
                 });
 
                 // Función para agregar productos a la tabla
                 function agregarProductoATabla(producto) {
-                    var subtotal = producto.precio * producto.cantidad;
-                    $('#carrito-body').append('<tr><td>' + producto.nombre + '</td><td>$' + producto.precio + '</td><td><input type="number" value="' + producto.cantidad + '" min="1" class="form-control cantidad-producto"></td><td class="subtotal">$' + subtotal + '</td><td><button class="btn btn-danger btn-sm eliminar-producto">Eliminar</button></td></tr>');
+                    var subtotal = producto.precio * 1; // Default cantidad 1
+                    $('#carrito-body').append('<tr><td>' + producto.nombre + '</td><td>$' + producto.precio + '</td><td><input type="number" value="1" min="1" max="' + producto.stock + '" class="form-control cantidad-producto"></td><td class="subtotal">$' + subtotal + '</td><td><button class="btn btn-danger btn-sm eliminar-producto">Eliminar</button></td></tr>');
                 }
-
-                // Manejar el envío del formulario para agregar productos
-                $('#addProductForm').submit(function (event) {
-                    event.preventDefault();
-                    var nombre = $('#productName').val();
-                    var precio = $('#productPrice').val();
-                    var cantidad = $('#productQuantity').val();
-                    var nuevoProducto = {nombre: nombre, precio: parseFloat(precio), cantidad: parseInt(cantidad)};
-                    agregarProductoATabla(nuevoProducto);
-                    $('#addProductModal').modal('hide');
-                });
 
                 // Manejar la eliminación de productos
                 $(document).on('click', '.eliminar-producto', function () {
@@ -218,6 +214,11 @@
                 $(document).on('change', '.cantidad-producto', function () {
                     var cantidad = $(this).val();
                     var precio = $(this).closest('tr').find('td:eq(1)').text().replace('$', '');
+                    var maxStock = $(this).attr('max');
+                    if (cantidad > maxStock) {
+                        $(this).val(maxStock);
+                        cantidad = maxStock;
+                    }
                     var subtotal = cantidad * precio;
                     $(this).closest('tr').find('.subtotal').text('$' + subtotal);
                     actualizarTotal();
