@@ -111,26 +111,32 @@
                         'Content-Type': 'application/x-www-form-urlencoded',
                     },
                     body: `correo=${encodeURIComponent(username)}&clave=${encodeURIComponent(password)}`
-                }).then(response => {
-                    if (response.ok) {
-                        return response.text();
-                    } else if (response.status === 401) {
-                        throw new Error("Usuario o contraseña incorrectos.");
-                    } else {
-                        throw new Error("Error en el servidor.");
-                    }
-                }).then(message => {
-                    alert(message); // Mensaje de éxito
-                    window.location.href = 'dashboard.html'; // Redirigir a la página de dashboard
-                }).catch(error => {
-                    errorMessage.textContent = error.message;
-                    errorMessage.style.display = 'block';
-                });
+                })
+                        .then(response => {
+                            if (!response.ok) {
+                                if (response.status === 401) {
+                                    throw new Error("Usuario o contraseña incorrectos.");
+                                } else if (response.status === 403) {
+                                    throw new Error("Acceso denegado. Rol no reconocido.");
+                                } else {
+                                    throw new Error("Error en el servidor.");
+                                }
+                            }
+                            return response.text();
+                        })
+                        .then(data => {
+                            // Redirigir según el rol
+                            if (data.trim() === 'admin') {
+                                window.location.href = 'admin-panel.html';
+                            } else if (data.trim() === 'usuario') {
+                                window.location.href = 'index.html';
+                            }
+                        })
+                        .catch(error => {
+                            errorMessage.textContent = error.message;
+                            errorMessage.style.display = 'block';
+                        });
             });
         </script>
     </body>
 </html>
-
-
-
-
